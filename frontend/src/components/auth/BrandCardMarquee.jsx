@@ -1,0 +1,410 @@
+import { motion } from "framer-motion";
+import {
+  TrendingUp,
+  Sparkles,
+  AlertCircle,
+  ArrowRight,
+  Check,
+  X,
+} from "lucide-react";
+import AILogo from "@/components/layout/AILogo";
+
+/**
+ * Infinite horizontal marquee of "product preview" cards.
+ * Renders the card list twice and slides the row from 0% to -50%
+ * so the wrap-around is invisible.
+ */
+export function BrandCardMarquee() {
+  const CARDS = [
+    AtsScoreCard,
+    ScoreEvolutionCard,
+    TopIssuesCard,
+    RewriteCard,
+    KeywordsCard,
+    StrengthsCard,
+  ];
+
+  const tilts = [-2, 1.5, -1, 2, -1.5, 1];
+
+  return (
+    <div
+      className="relative w-full overflow-hidden"
+      style={{
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
+      }}
+    >
+      <motion.div
+        className="flex gap-5 py-4"
+        animate={{ x: ["0%", "-400%"] }}
+        transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+      >
+        {[...CARDS, ...CARDS].map((Card, i) => (
+          <div
+            key={i}
+            className="shrink-0"
+            style={{ transform: `rotate(${tilts[i % tilts.length]}deg)` }}
+          >
+            <Card />
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Reusable shell for compact product preview cards
+ * ───────────────────────────────────────────────────────────────────────── */
+function PreviewCard({ children, width = 300 }) {
+  return (
+    <div
+      className="bg-[#151515] text-white rounded-3xl p-5 border border-white/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65)]"
+      style={{ width }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Label({ children }) {
+  return (
+    <div className="text-[10px] uppercase tracking-wider text-white/45 font-semibold">
+      {children}
+    </div>
+  );
+}
+
+function Footer({ subtitle, version }) {
+  return (
+    <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <AILogo size={24} animated={false} />
+        <span className="text-[11px] font-medium text-white/75">
+          {subtitle || "Resumora"}
+        </span>
+      </div>
+      {version && (
+        <span className="text-[10px] text-white/45 tabular">{version}</span>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 1 — ATS Readiness score
+ * ───────────────────────────────────────────────────────────────────────── */
+function AtsScoreCard() {
+  return (
+    <PreviewCard width={300}>
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <Label>ATS Readiness</Label>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span
+              className="text-[42px] font-semibold leading-none text-white"
+              style={{
+                fontFamily: '"Geist", "Inter", sans-serif',
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              82
+            </span>
+            <span className="text-sm text-white/45 font-medium">/ 100</span>
+          </div>
+        </div>
+        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-[rgba(255,107,26,0.14)] text-[#FF8C42]">
+          <TrendingUp size={10} strokeWidth={2.5} />
+          +12 pts
+        </div>
+      </div>
+
+      <div className="relative h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{
+            width: "82%",
+            background: "linear-gradient(90deg, #FF8C42 0%, #FF6B1A 100%)",
+          }}
+        />
+      </div>
+
+      <Footer subtitle="Resumora" version="V3 of 3" />
+    </PreviewCard>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 2 — Score Evolution mini chart
+ * ───────────────────────────────────────────────────────────────────────── */
+function ScoreEvolutionCard() {
+  // points along a 240×60 viewBox
+  const points = "0,48 60,36 120,24 180,12 240,4";
+  const area = "0,60 0,48 60,36 120,24 180,12 240,4 240,60";
+
+  return (
+    <PreviewCard width={300}>
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <Label>Score Evolution</Label>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span
+              className="text-[28px] font-semibold leading-none text-white"
+              style={{
+                fontFamily: '"Geist", "Inter", sans-serif',
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              +24
+            </span>
+            <span className="text-xs text-white/45">pts overall</span>
+          </div>
+        </div>
+        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-[rgba(255,107,26,0.14)] text-[#FF8C42]">
+          V1 → V3
+        </div>
+      </div>
+
+      <svg
+        viewBox="0 0 240 60"
+        className="w-full h-[60px]"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="ev-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FF6B1A" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#FF6B1A" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <polygon points={area} fill="url(#ev-fill)" />
+        <polyline
+          points={points}
+          stroke="#FF8C42"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        {[
+          [0, 48],
+          [60, 36],
+          [120, 24],
+          [180, 12],
+          [240, 4],
+        ].map(([x, y], i) => (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r="2.5"
+            fill="#151515"
+            stroke="#FF8C42"
+            strokeWidth="1.5"
+          />
+        ))}
+      </svg>
+
+      <div className="flex items-center justify-between text-[10px] text-white/45 mt-1 tabular">
+        <span>58</span>
+        <span>66</span>
+        <span>72</span>
+        <span>78</span>
+        <span className="text-white font-semibold">82</span>
+      </div>
+
+      <Footer subtitle="Trend across versions" />
+    </PreviewCard>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 3 — Top Issues
+ * ───────────────────────────────────────────────────────────────────────── */
+function TopIssuesCard() {
+  const issues = [
+    { title: "Missing quantified impact", sev: "high" },
+    { title: "Generic action verbs", sev: "medium" },
+    { title: "No keyword density", sev: "high" },
+  ];
+  const TONE = {
+    high: "bg-[rgba(251,113,133,0.12)] text-[#FB7185]",
+    medium: "bg-[rgba(255,180,84,0.12)] text-[#FFB454]",
+    low: "bg-white/10 text-white/55",
+  };
+
+  return (
+    <PreviewCard width={320}>
+      <div className="flex items-start justify-between mb-4">
+        <Label>Critical Issues</Label>
+        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-[rgba(251,113,133,0.12)] text-[#FB7185]">
+          5 found
+        </div>
+      </div>
+
+      <div className="space-y-2.5">
+        {issues.map((iss, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center text-white/45 shrink-0">
+              <AlertCircle size={13} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-medium text-white truncate">
+                {iss.title}
+              </div>
+            </div>
+            <span
+              className={`text-[9px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded-full ${TONE[iss.sev]}`}
+            >
+              {iss.sev}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <Footer subtitle="Apply fixes" />
+    </PreviewCard>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 4 — Bullet Rewrite
+ * ───────────────────────────────────────────────────────────────────────── */
+function RewriteCard() {
+  return (
+    <PreviewCard width={340}>
+      <div className="flex items-start justify-between mb-3">
+        <Label>AI Rewrite</Label>
+        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-[rgba(255,107,26,0.14)] text-[#FF8C42]">
+          <Sparkles size={10} strokeWidth={2.5} />
+          Suggested
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-3">
+          <div className="text-[9px] uppercase tracking-wide text-white/45 mb-1 font-semibold">
+            Original
+          </div>
+          <div className="text-[12.5px] text-white/50 leading-snug line-through decoration-white/30">
+            Worked with the team to deliver projects.
+          </div>
+        </div>
+
+        <div className="flex justify-center text-white/30">
+          <ArrowRight size={14} />
+        </div>
+
+        <div className="rounded-2xl bg-[rgba(255,107,26,0.10)] border border-[rgba(255,107,26,0.18)] p-3">
+          <div className="text-[9px] uppercase tracking-wide text-[#FF8C42] mb-1 font-semibold">
+            Rewritten
+          </div>
+          <div className="text-[12.5px] text-white leading-snug">
+            Led 5 engineers to ship 3 features, driving a 30% lift in monthly
+            retention.
+          </div>
+        </div>
+      </div>
+
+      <Footer subtitle="Bullet improved" />
+    </PreviewCard>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 5 — Keywords
+ * ───────────────────────────────────────────────────────────────────────── */
+function KeywordsCard() {
+  const present = ["React", "TypeScript", "Node.js", "GraphQL", "AWS"];
+  const missing = ["Kubernetes", "gRPC"];
+
+  return (
+    <PreviewCard width={320}>
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <Label>Keyword Match</Label>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span
+              className="text-[28px] font-semibold leading-none text-white"
+              style={{
+                fontFamily: '"Geist", "Inter", sans-serif',
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              24
+            </span>
+            <span className="text-sm text-white/45">/ 30 matched</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2.5">
+        <div className="flex flex-wrap gap-1.5">
+          {present.map((k) => (
+            <span
+              key={k}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[rgba(255,107,26,0.14)] text-[#FF8C42]"
+            >
+              <Check size={9} strokeWidth={3} />
+              {k}
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {missing.map((k) => (
+            <span
+              key={k}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[rgba(251,113,133,0.12)] text-[#FB7185]"
+            >
+              <X size={9} strokeWidth={3} />
+              {k}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <Footer subtitle="ATS scan" />
+    </PreviewCard>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Card 6 — Standout Strengths
+ * ───────────────────────────────────────────────────────────────────────── */
+function StrengthsCard() {
+  const strengths = [
+    { title: "Quantified leadership impact" },
+    { title: "Strong technical depth signals" },
+    { title: "Clean, scannable structure" },
+  ];
+  return (
+    <PreviewCard width={310}>
+      <div className="flex items-start justify-between mb-4">
+        <Label>Standout Strengths</Label>
+        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-[rgba(255,107,26,0.14)] text-[#FF8C42]">
+          5 total
+        </div>
+      </div>
+
+      <div className="space-y-2.5">
+        {strengths.map((s, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <div className="h-8 w-8 rounded-xl bg-[rgba(255,107,26,0.14)] flex items-center justify-center text-[#FF8C42] shrink-0">
+              <Sparkles size={13} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-medium text-white">
+                {s.title}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Footer subtitle="What's working" />
+    </PreviewCard>
+  );
+}

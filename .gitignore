@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+firebase-service-account.json
+**/firebase-service-account.json
+*service-account*.json
+**/*service-account*.json
+*.pem
+*.key
+
+# Build
+dist/
+build/
+**/dist/
+**/build/
+
+# Logs
+*.log
+
+# Local database and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Private keys and certificates
+*.p12
+*.pfx
+
+# Debug files
+npm-debug.log*
+yarn-debug.log*
