@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://ai-resume-checker-wh8x.onrender.com/api/:path*"
+      "destination": "https://resumora-xrnq.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
